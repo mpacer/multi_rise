@@ -1,13 +1,12 @@
+# -*- coding: utf-8 -*-
 
+import argparse
+
+from pathlib import Path
 
 import nbformat
-from nbformat import NotebookNode, validate, from_dict
-from nbformat.v4 import new_notebook, new_code_cell, new_markdown_cell
-from copy import deepcopy
-from pprint import pprint
-import os
-import argparse
-from pathlib import Path
+
+from nbformat.v4 import new_code_cell, new_markdown_cell, new_notebook
 
 
 def combine_nbs(nb_files=None, output=None):
@@ -45,20 +44,24 @@ def combine_nbs(nb_files=None, output=None):
 
     nbformat.write(combined_nb, str(output))
 
+
 def parse_index(fp):
-    if is_instance(fp, Path):
+    if isinstance(fp, Path):
         with fp.open() as f:
-            nb_files = [fname for fname in f.readlines() if Path(fname).is_file()]
+            nb_files = [fname.rstrip() for fname in f.readlines()
+                        if Path(fname.rstrip()).is_file()]
     return nb_files
 
+
 def main(argv=None):
-    ap = argparse.ArgumentParser(description='Convert a set of notebooks to HTML')
-    ap.add_argument('--index', nargs='?', type=Path, default= 'index.txt')
-    ap.add_argument('--output', nargs='?', type=Path, default='combined_nb.ipynb')
+    ap = argparse.ArgumentParser(description='Combine notebooks and make slides')
+    ap.add_argument('--index', nargs='?', type=Path,
+                    default='index.txt')
+    ap.add_argument('--output', nargs='?', type=Path,
+                    default='combined_nb.ipynb')
     args = ap.parse_args(argv)
 
-    combine_nbs(nb_files=None, output=args.output)
-
+    combine_nbs(nb_files=parse_index(args.index), output=args.output)
 
 
 if __name__ == '__main__':
