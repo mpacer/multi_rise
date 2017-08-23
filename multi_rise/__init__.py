@@ -5,7 +5,7 @@ so that the notebooks don't cause issues for each other."""
 import argparse
 from pathlib import Path
 
-from multi_rise import combine_nbs
+from .combine import combine_nbs
 
 __version__ = '0.1'
 
