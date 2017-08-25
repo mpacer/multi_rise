@@ -19,24 +19,26 @@ def combine_nbs(nb_files=None, output=None):
     for file in nb_files:
         nb = nbformat.read(file, as_version=4)
         combined_nb.metadata.merge(nb.metadata)
-        nb.cells.append(
-                new_code_cell("%reset -f",
-                              metadata={
-                                      "slideshow": {
-                                          "slide_type": 'slide'
-                                      }
-                              }))
-        nb.cells.append(
-                new_markdown_cell("Execute for next speaker",
+        if 'no_reset' not in nb.cells[-1].metadata.get("tags", []):
+            nb.cells.append(
+                    new_code_cell("%reset -f",
                                   metadata={
-                                      "slideshow": {
-                                          "slide_type": 'slide'
-                                      }
+                                          "slideshow": {
+                                              "slide_type": 'slide'
+                                          }
                                   }))
+            nb.cells.append(
+                    new_markdown_cell("Execute for next speaker",
+                                      metadata={
+                                          "slideshow": {
+                                              "slide_type": '-'
+                                          }
+                                      }))
         for cell in nb.cells:
             cell.metadata.origin = file
             combined_nb.cells.append(cell)
 
+    combined_nb.metadata.pop("celltoolbar")
     nbformat.write(combined_nb, str(output))
 
 
