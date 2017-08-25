@@ -21,19 +21,19 @@ def combine_nbs(nb_files=None, output=None):
         combined_nb.metadata.merge(nb.metadata)
         if 'no_reset' not in nb.cells[-1].metadata.get("tags", []):
             nb.cells.append(
-                    new_code_cell("%reset -f",
-                                  metadata={
-                                          "slideshow": {
-                                              "slide_type": 'slide'
-                                          }
-                                  }))
-            nb.cells.append(
                     new_markdown_cell("Execute for next speaker",
                                       metadata={
                                           "slideshow": {
-                                              "slide_type": '-'
+                                              "slide_type": 'slide'
                                           }
                                       }))
+            nb.cells.append(
+                    new_code_cell("%reset -f",
+                                  metadata={
+                                          "slideshow": {
+                                              "slide_type": '-'
+                                          }
+                                  }))
         for cell in nb.cells:
             cell.metadata.origin = file
             combined_nb.cells.append(cell)
